@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/provider/dark_theme_provider.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
+import 'package:provider/provider.dart';
 
 class UserScreen extends StatefulWidget {
   @override
@@ -7,7 +9,6 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  var _useDartTheme = false;
   late ScrollController _scrollController;
 
   @override
@@ -21,6 +22,7 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final darkThemeProvider = Provider.of<DarkThemeProvider>(context);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -152,16 +154,16 @@ class _UserScreenState extends State<UserScreen> {
                         Icons.date_range,
                       ),
                       ListTileSwitch(
-                        value: _useDartTheme,
+                        value: darkThemeProvider.darkTheme,
                         leading: const Icon(Icons.dark_mode),
                         onChanged: (value) {
                           setState(() {
-                            _useDartTheme = value;
+                            darkThemeProvider.darkTheme = value;
                           });
                         },
                         visualDensity: VisualDensity.comfortable,
                         switchType: SwitchType.material,
-                        switchActiveColor: Theme.of(context).primaryColor,
+                        switchActiveColor: Colors.indigo,
                         title: const Text('Use dark theme'),
                       ),
                     ],

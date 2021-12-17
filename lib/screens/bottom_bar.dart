@@ -66,7 +66,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         clipBehavior: Clip.antiAlias,
         child: BottomNavigationBar(
           backgroundColor: Theme.of(context).backgroundColor,
-          selectedItemColor: Theme.of(context).primaryColor,
+          selectedItemColor: Colors.pink,
           unselectedItemColor: Colors.grey,
           currentIndex: _selectedPageIndex,
           onTap: _selectPage,
