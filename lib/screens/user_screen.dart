@@ -208,7 +208,7 @@ class _UserScreenState extends State<UserScreen> {
             child: FloatingActionButton(
               child: const Icon(Icons.camera_alt_outlined),
               onPressed: () {},
-              backgroundColor: Colors.pink,
+              backgroundColor: Theme.of(context).colorScheme.primaryVariant,
             ),
           ),
         ));

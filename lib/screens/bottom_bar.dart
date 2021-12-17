@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/my_app_icons.dart';
-import 'package:full_shop_app/screens/cart_screen.dart';
+import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds_screen.dart';
 import 'package:full_shop_app/screens/home_sceen.dart';
 import 'package:full_shop_app/screens/search_screen.dart';
@@ -14,7 +14,7 @@ class BottomBarScreen extends StatefulWidget {
 class _BottomBarScreenState extends State<BottomBarScreen> {
   late List<Map<String, Object>> _pages;
 
-  int _selectedPageIndex = 4;
+  int _selectedPageIndex = 2;
 
   @override
   void initState() {
@@ -53,12 +53,6 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   Widget build(BuildContext context) {
     final page = _pages[_selectedPageIndex];
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     page['title'] as String,
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: page['page'] as Widget,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -66,7 +60,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         clipBehavior: Clip.antiAlias,
         child: BottomNavigationBar(
           backgroundColor: Theme.of(context).backgroundColor,
-          selectedItemColor: Colors.pink,
+          selectedItemColor: Theme.of(context).colorScheme.primaryVariant,
           unselectedItemColor: Colors.grey,
           currentIndex: _selectedPageIndex,
           onTap: _selectPage,

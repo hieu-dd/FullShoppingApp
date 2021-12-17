@@ -7,7 +7,7 @@ class EmptyCartScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.only(top: 80),
+          margin:const EdgeInsets.only(top: 80),
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.4,
           child: const Image(
@@ -37,7 +37,7 @@ class EmptyCartScreen extends StatelessWidget {
           margin: const EdgeInsets.only(
             left: 20,
             right: 20,
-            top: 20,
+            top: 60,
           ),
           width: double.infinity,
           height: 50,
@@ -52,10 +52,10 @@ class EmptyCartScreen extends StatelessWidget {
             child: Text(
               'shop now'.toUpperCase(),
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Theme.of(context).textSelectionColor,
+              style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 36,
-                  fontWeight: FontWeight.w600),
+                  fontWeight: FontWeight.w500),
             ),
           ),
         )
