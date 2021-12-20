@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/const/data.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:provider/provider.dart';
@@ -65,8 +66,7 @@ class _UserScreenState extends State<UserScreen> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(
-                                    'https://scontent.fhph1-2.fna.fbcdn.net/v/t1.6435-9/131583423_3116865685207328_6246651492134615022_n.jpg?_nc_cat=110&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=qSLYwRuBZRMAX9mJHak&tn=VIxN7sx8QAaNTS7c&_nc_ht=scontent.fhph1-2.fna&oh=00_AT8exhuIc1Anyu0NZs1sJrjF4HtHH0eHL-w6LLwnQGwVkw&oe=61E1D029'),
+                                image: NetworkImage(user_avatar),
                               ),
                             ),
                           ),
