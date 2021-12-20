@@ -89,10 +89,7 @@ class _UserScreenState extends State<UserScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: userTitle("User Information"),
-                      ),
+                      userTitle("User Information"),
                       const Divider(
                         thickness: 1,
                         color: Colors.grey,
@@ -117,41 +114,10 @@ class _UserScreenState extends State<UserScreen> {
                         "31/03/1994",
                         Icons.date_range,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: userTitle("User Information"),
-                      ),
+                      userTitle("User settings"),
                       const Divider(
                         thickness: 1,
                         color: Colors.grey,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: userTitle("User Information"),
-                      ),
-                      const Divider(
-                        thickness: 1,
-                        color: Colors.grey,
-                      ),
-                      userListTile(
-                        "Email",
-                        "hieu.dd@teko.vn",
-                        Icons.email,
-                      ),
-                      userListTile(
-                        "Phone",
-                        "0943310394",
-                        Icons.phone,
-                      ),
-                      userListTile(
-                        "Shipping address",
-                        "16/91 Gang Thep Street",
-                        Icons.local_shipping,
-                      ),
-                      userListTile(
-                        "Joined date",
-                        "31/03/1994",
-                        Icons.date_range,
                       ),
                       ListTileSwitch(
                         value: darkThemeProvider.darkTheme,
@@ -216,9 +182,12 @@ class _UserScreenState extends State<UserScreen> {
 }
 
 Widget userTitle(String title) {
-  return Text(
-    title,
-    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  return Padding(
+    padding: const EdgeInsets.all(8),
+    child: Text(
+      title,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    ),
   );
 }
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/my_app_icons.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
-import 'package:full_shop_app/screens/feeds_screen.dart';
+import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
 import 'package:full_shop_app/screens/home_sceen.dart';
 import 'package:full_shop_app/screens/search_screen.dart';
 import 'package:full_shop_app/screens/user_screen.dart';
