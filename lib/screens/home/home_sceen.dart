@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/const/data.dart';
 import 'package:full_shop_app/screens/home/category_item_widget.dart';
+import 'package:full_shop_app/screens/home/popular_product_item_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -28,6 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
     "assets/images/huawei.jpg",
   ];
 
+  final List<Map<String, Object>> _categories = [
+    {'title': 'Beauty', 'imageAssest': 'assets/images/CatBeauty.jpg'},
+    {'title': 'Clothes', 'imageAssest': 'assets/images/CatClothes.jpg'},
+    {'title': 'Furniture', 'imageAssest': 'assets/images/CatFurniture.jpg'},
+    {'title': 'Laptops', 'imageAssest': 'assets/images/CatLaptops.png'},
+    {'title': 'Phones', 'imageAssest': 'assets/images/CatPhones.png'},
+    {'title': 'Shoes', 'imageAssest': 'assets/images/CatShoes.jpg'},
+    {'title': 'Watches', 'imageAssest': 'assets/images/CatWatches.jpg'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return BackdropScaffold(
@@ -40,47 +51,44 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildCarousels(context),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                "Categories",
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-              ),
+            _buildTitle(
+              title: "Categories",
             ),
             Container(
-              height: 200,
+              height: 190,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (ctx, index) {
                   return CategoryItemWidget(
-                    image: AssetImage("assets/images/CatPhones.jpg"),
-                    categoryName: "Phones",
+                    image: AssetImage(
+                      _categories[index]["imageAssest"] as String,
+                    ),
+                    categoryName: _categories[index]["title"] as String,
                   );
                 },
-                itemCount: 7,
+                itemCount: _categories.length,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Text(
-                    "Popular brands",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w500),
-                  ),
-                  const Spacer(),
-                  Text(
-                    "See all",
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                ],
-              ),
+            _buildTitle(
+              title: "Popular brands",
+              textAction: "See all",
             ),
             _buildPopularBrands(),
+            _buildTitle(
+              title: "Popular products",
+              textAction: "See all",
+            ),
+            Container(
+              height: 251,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (ctx, index) {
+                  return PopularProductItemWidget();
+                },
+                itemCount: _categories.length,
+              ),
+            ),
           ],
         ),
       ),
@@ -172,6 +180,30 @@ class _HomeScreenState extends State<HomeScreen> {
           onPageChanged: (index, reason) {},
           scrollDirection: Axis.horizontal,
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle({required String title, String? textAction}) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+          const Spacer(),
+          textAction != null
+              ? Text(
+                  textAction,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                )
+              : SizedBox(),
+        ],
       ),
     );
   }
