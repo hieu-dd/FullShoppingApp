@@ -3,8 +3,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/const/data.dart';
+import 'package:full_shop_app/provider/products_provider.dart';
+import 'package:full_shop_app/screens/brands/brand_navigation_rail_screen.dart';
 import 'package:full_shop_app/screens/home/category_item_widget.dart';
 import 'package:full_shop_app/screens/home/popular_product_item_widget.dart';
+import 'package:provider/provider.dart';
 
 import 'back_layer_menu.dart';
 
@@ -43,6 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<ProductsProvider>(context);
+    final popularProducts = productsProvider.popularProducts;
     return BackdropScaffold(
       appBar: _buildAppbar(context),
       headerHeight: 190,
@@ -80,14 +85,17 @@ class _HomeScreenState extends State<HomeScreen> {
               textAction: "See all",
             ),
             Container(
-              height: 251,
+              height: 270,
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (ctx, index) {
-                  return PopularProductItemWidget();
+                  return ChangeNotifierProvider.value(
+                    child: PopularProductItemWidget(),
+                    value: popularProducts[index],
+                  );
                 },
-                itemCount: _categories.length,
+                itemCount: popularProducts.length,
               ),
             ),
           ],
@@ -154,17 +162,22 @@ class _HomeScreenState extends State<HomeScreen> {
       child: CarouselSlider.builder(
         itemCount: _brandImages.length,
         itemBuilder: (context, index, realIndex) {
-          return Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              image: DecorationImage(
-                image: AssetImage(_brandImages[index]),
-                fit: BoxFit.fill,
+          return InkWell(
+            onTap: (){
+              Navigator.of(context).pushNamed(BrandsScreen.routeName);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                image: DecorationImage(
+                  image: AssetImage(_brandImages[index]),
+                  fit: BoxFit.fill,
+                ),
               ),
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              width: double.infinity,
             ),
-            margin: const EdgeInsets.symmetric(horizontal: 5),
-            width: double.infinity,
           );
         },
         options: CarouselOptions(

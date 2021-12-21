@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
+import 'package:full_shop_app/provider/products_provider.dart';
 import 'package:full_shop_app/routes/app_routes.dart';
-import 'package:full_shop_app/screens/bottom_bar.dart';
 import 'package:provider/provider.dart';
 
 import 'const/theme_data.dart';
@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => DarkThemeProvider()),
+          ChangeNotifierProvider(create: (context) => ProductsProvider()),
         ],
         child: Consumer<DarkThemeProvider>(
           builder: (context, theme, child) {

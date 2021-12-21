@@ -1,34 +1,32 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/provider/product_provider.dart';
+import 'package:provider/provider.dart';
 
 class FeedProduct extends StatelessWidget {
-  final int index;
-
-  FeedProduct(this.index);
+  FeedProduct({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context);
     return Wrap(
       children: [
         Container(
-          color: Colors.white,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
           width: 250,
           child: Column(
             children: [
               Stack(
                 children: [
                   Container(
-                    constraints: const BoxConstraints(
-                      maxHeight: 200,
-                      minHeight: 150,
-                    ),
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          "https://lh3.googleusercontent.com/U5eymwOqCTkRlUVddqVwi1dbMBRIQwx1e9b40i3D1tqNZK_mtWTpwlN8eBC_Mjd_7jpoBuAwbtwRahgm1pQ",
-                        ),
-                        fit: BoxFit.fill,
-                      ),
+                    padding: EdgeInsets.all(10),
+                    width: double.infinity,
+                    child: Image.network(
+                      product.imageUrl,
+                      fit: BoxFit.scaleDown,
                     ),
                   ),
                   Badge(
@@ -51,19 +49,22 @@ class FeedProduct extends StatelessWidget {
                   ),
                 ],
               ),
-              Divider(
+              const Divider(
                 thickness: 0.5,
                 height: 0.5,
               ),
               Container(
-                color: Colors.white,
-                padding: EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Description $index"),
+                    Text(product.description),
                     Text(
-                      "\$ 999",
+                      "\$ ${product.price}",
                       style:
                           TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
                     ),
@@ -73,7 +74,7 @@ class FeedProduct extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Quantity: 10"),
+                        Text("Quantity: ${product.quantity}"),
                         InkWell(
                           child: Icon(Icons.more_horiz),
                         )
@@ -82,10 +83,6 @@ class FeedProduct extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
-              index % 3 != 1 ? Text("HIhi") : SizedBox(),
             ],
           ),
         )

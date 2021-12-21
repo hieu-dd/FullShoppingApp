@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/data.dart';
+import 'package:full_shop_app/const/my_app_icons.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
+import 'package:full_shop_app/screens/wishlist/wishlist_screen.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:provider/provider.dart';
+
+import 'cart/cart_screen.dart';
 
 class UserScreen extends StatefulWidget {
   @override
@@ -89,6 +93,27 @@ class _UserScreenState extends State<UserScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      userTitle("User Bag"),
+                      const Divider(
+                        thickness: 1,
+                        color: Colors.grey,
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(WishlistScreen.routeName);
+                        },
+                        leading: Icon(MyAppIcons.wishlist),
+                        title: Text("Wish list"),
+                        trailing: Icon(Icons.chevron_right_outlined),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(CartScreen.routeName);
+                        },
+                        leading: Icon(MyAppIcons.cart),
+                        title: Text("Cart"),
+                        trailing: Icon(Icons.chevron_right_outlined),
+                      ),
                       userTitle("User Information"),
                       const Divider(
                         thickness: 1,
