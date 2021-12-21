@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:full_shop_app/screens/feeds/feed_product.dart';
 
 class FeedsScreen extends StatelessWidget {
+  static const routeName = "/feeds-screen";
   @override
   Widget build(BuildContext context) {
     return Scaffold(

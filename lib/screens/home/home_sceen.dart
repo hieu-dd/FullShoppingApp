@@ -6,6 +6,8 @@ import 'package:full_shop_app/const/data.dart';
 import 'package:full_shop_app/screens/home/category_item_widget.dart';
 import 'package:full_shop_app/screens/home/popular_product_item_widget.dart';
 
+import 'back_layer_menu.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -43,9 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BackdropScaffold(
       appBar: _buildAppbar(context),
-      backLayer: Center(
-        child: Text("Back Layer"),
-      ),
+      headerHeight: 190,
+      backLayer: BackLayerMenu(),
       frontLayer: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
