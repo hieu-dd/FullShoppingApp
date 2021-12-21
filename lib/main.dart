@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
+import 'package:full_shop_app/routes/app_routes.dart';
 import 'package:full_shop_app/screens/bottom_bar.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               title: 'Flutter Demo',
               theme: Styles.themeData(theme.darkTheme, context),
-              home: BottomBarScreen(),
+              onGenerateRoute: AppRoutes.generateRoute,
             );
           },
         ));
