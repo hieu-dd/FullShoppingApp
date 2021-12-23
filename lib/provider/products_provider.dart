@@ -12,12 +12,22 @@ class ProductsProvider with ChangeNotifier {
         .toList();
   }
 
+  List<Product> searchQuery(String text) {
+    return _products
+        .where((element) =>
+            element.title.toLowerCase().contains(text.toLowerCase()))
+        .toList();
+  }
+
   Product findById(String productId) {
     return _products.firstWhere((element) => element.id == productId);
   }
 
   List<Product> get popularProducts =>
       _products.where((element) => element.isPopular).toList();
+
+  List<Product> get favoriteProducts =>
+      _products.where((element) => element.isFavorite).toList();
 
   List<Product> _products = [
     Product(

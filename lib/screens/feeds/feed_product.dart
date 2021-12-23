@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/provider/product_provider.dart';
+import 'package:full_shop_app/screens/feeds/feed_product_dialog.dart';
 import 'package:provider/provider.dart';
 
 class FeedProduct extends StatelessWidget {
@@ -9,6 +10,18 @@ class FeedProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context);
+
+    void _showDialog() {
+      showDialog(
+          context: context,
+          builder: (ctx) {
+            return ChangeNotifierProvider.value(
+              value: product,
+              child: FeedProductDialog(),
+            );
+          });
+    }
+
     return Wrap(
       children: [
         Container(
@@ -76,6 +89,7 @@ class FeedProduct extends StatelessWidget {
                       children: [
                         Text("Quantity: ${product.quantity}"),
                         InkWell(
+                          onTap: _showDialog,
                           child: Icon(Icons.more_horiz),
                         )
                       ],

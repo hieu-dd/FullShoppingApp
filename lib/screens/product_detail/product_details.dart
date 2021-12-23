@@ -1,10 +1,13 @@
 import 'dart:ui';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/const/my_app_icons.dart';
+import 'package:full_shop_app/provider/cart_provider.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
 import 'package:full_shop_app/provider/products_provider.dart';
+import 'package:full_shop_app/provider/wishlist_provider.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds/feed_product.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_screen.dart';
@@ -23,10 +26,14 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final themeState = Provider.of<DarkThemeProvider>(context);
-    final productsData = Provider.of<ProductsProvider>(context);
+    final productsData = Provider.of<ProductsProvider>(context, listen: false);
     final productId = ModalRoute.of(context)?.settings.arguments as String;
     final prodAttr = productsData.findById(productId);
     final productsList = productsData.products;
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final wishListProvider =
+        Provider.of<WishListProvider>(context, listen: false);
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -256,24 +263,50 @@ class _ProductDetailsState extends State<ProductDetails> {
                       TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
                 ),
                 actions: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      MyAppIcons.wishlist,
-                      color: ColorsConsts.favColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(WishlistScreen.routeName);
+                  Consumer<WishListProvider>(
+                    builder: (ctx, wishlist, child) {
+                      return Badge(
+                        animationType: BadgeAnimationType.slide,
+                        toAnimate: true,
+                        position: BadgePosition.topEnd(top: 5, end: 7),
+                        badgeContent: Text(
+                          wishlist.items.length.toString(),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            MyAppIcons.wishlist,
+                            color: ColorsConsts.favColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(WishlistScreen.routeName);
+                          },
+                        ),
+                      );
                     },
                   ),
-                  IconButton(
-                    icon: Icon(
-                      MyAppIcons.cart,
-                      color: ColorsConsts.cartColor,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(CartScreen.routeName);
+                  Consumer<CartProvider>(
+                    builder: (ctx, cart, child) {
+                      return Badge(
+                        animationType: BadgeAnimationType.slide,
+                        toAnimate: true,
+                        position: BadgePosition.topEnd(top: 5, end: 7),
+                        badgeContent: Text(
+                          cart.cartItems.length.toString(),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            MyAppIcons.cart,
+                            color: ColorsConsts.cartColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(CartScreen.routeName);
+                          },
+                        ),
+                      );
                     },
-                  ),
+                  )
                 ]),
           ),
           Align(
@@ -287,7 +320,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(side: BorderSide.none),
                       color: Colors.redAccent.shade400,
-                      onPressed: () {},
+                      onPressed: () {
+                        cartProvider.addProductToCart(productId, prodAttr.title,
+                            prodAttr.price, prodAttr.imageUrl);
+                      },
                       child: Text(
                         'Add to Cart'.toUpperCase(),
                         style: TextStyle(fontSize: 16, color: Colors.white),
@@ -334,11 +370,21 @@ class _ProductDetailsState extends State<ProductDetails> {
                     height: 50,
                     child: InkWell(
                       splashColor: ColorsConsts.favColor,
-                      onTap: () {},
+                      onTap: () {
+                        wishListProvider.toggleWishProduct(prodAttr);
+                      },
                       child: Center(
-                        child: Icon(
-                          MyAppIcons.wishlist,
-                          color: ColorsConsts.white,
+                        child: Consumer<WishListProvider>(
+                          builder: (ctx, wishlist, child) {
+                            return Icon(
+                              wishlist.hasProduct(prodAttr)
+                                  ? Icons.favorite_rounded
+                                  : MyAppIcons.wishlist,
+                              color: wishlist.hasProduct(prodAttr)
+                                  ? Colors.red
+                                  : ColorsConsts.white,
+                            );
+                          },
                         ),
                       ),
                     ),

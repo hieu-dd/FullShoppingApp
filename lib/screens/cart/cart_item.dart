@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
+import 'package:full_shop_app/global/global_method.dart';
+import 'package:full_shop_app/model/cart_entity.dart';
+import 'package:full_shop_app/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 class CartItem extends StatelessWidget {
+  final String productId;
+
+  CartItem({required this.productId, Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final cartItem = Provider.of<CartItemEntity>(context);
     return Wrap(
       children: [
         Container(
@@ -22,11 +32,10 @@ class CartItem extends StatelessWidget {
               Container(
                 width: 130,
                 height: 130,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                        "https://lh3.googleusercontent.com/U5eymwOqCTkRlUVddqVwi1dbMBRIQwx1e9b40i3D1tqNZK_mtWTpwlN8eBC_Mjd_7jpoBuAwbtwRahgm1pQ"),
-                    fit: BoxFit.fill,
+                    image: NetworkImage(cartItem.imageUrl),
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
               ),
@@ -41,8 +50,8 @@ class CartItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
-                          child: const Text(
-                            "Title",
+                          child: Text(
+                            cartItem.title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -52,7 +61,16 @@ class CartItem extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            GlobalMethod.showAlertDialog(
+                              "Warning",
+                              "Are you sure to delete this product",
+                              () {
+                                cartProvider.deleteProduct(productId);
+                              },
+                              context,
+                            );
+                          },
                           icon: const Icon(Icons.close),
                           color: Colors.red,
                         ),
@@ -65,7 +83,7 @@ class CartItem extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          '\$ 450',
+                          '\$ ${cartItem.price}',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
                             fontSize: 20,
@@ -80,7 +98,7 @@ class CartItem extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                          '\$ 450',
+                          '\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
                             fontSize: 20,
@@ -102,6 +120,10 @@ class CartItem extends StatelessWidget {
                         ),
                         const Spacer(),
                         InkWell(
+                          onTap: () {
+                            cartProvider.updateProduct(
+                                productId, cartItem.quantity - 1);
+                          },
                           child: Padding(
                               padding: EdgeInsets.all(5),
                               child: Icon(Icons.remove)),
@@ -124,7 +146,7 @@ class CartItem extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              "2",
+                              cartItem.quantity.toString(),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   color: Colors.white,
@@ -134,6 +156,12 @@ class CartItem extends StatelessWidget {
                           ),
                         ),
                         InkWell(
+                          onTap: () {
+                            cartProvider.updateProduct(
+                              productId,
+                              cartItem.quantity + 1,
+                            );
+                          },
                           splashColor: Theme.of(context).colorScheme.secondary,
                           child: Container(
                             child: Padding(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/provider/cart_provider.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
 import 'package:full_shop_app/provider/products_provider.dart';
+import 'package:full_shop_app/provider/wishlist_provider.dart';
 import 'package:full_shop_app/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,8 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => DarkThemeProvider()),
           ChangeNotifierProvider(create: (context) => ProductsProvider()),
+          ChangeNotifierProvider(create: (context) => CartProvider()),
+          ChangeNotifierProvider(create: (context) => WishListProvider()),
         ],
         child: Consumer<DarkThemeProvider>(
           builder: (context, theme, child) {

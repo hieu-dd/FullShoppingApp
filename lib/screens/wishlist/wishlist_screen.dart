@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/provider/product_provider.dart';
+import 'package:full_shop_app/provider/wishlist_provider.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_empty.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_full.dart';
+import 'package:provider/provider.dart';
 
 class WishlistScreen extends StatelessWidget {
   static const routeName = '/wishlist-screen';
 
   @override
   Widget build(BuildContext context) {
-    List wishlistList = [];
-    return wishlistList.isNotEmpty
+    final wishListProvider = Provider.of<WishListProvider>(context);
+    return wishListProvider.items.isEmpty
         ? Scaffold(body: EmptyWishList())
         : Scaffold(
             appBar: AppBar(
-              title: Text('Wishlist ()'),
+              title: Text('Wishlist (${wishListProvider.items.length})'),
             ),
             body: ListView.builder(
-              itemCount: 5,
+              itemCount: wishListProvider.items.length,
               itemBuilder: (BuildContext ctx, int index) {
-                return WishlistFull();
+                return ChangeNotifierProvider<Product>.value(
+                  child: WishlistFull(),
+                  value: wishListProvider.items.values.toList()[index],
+                );
               },
             ),
           );

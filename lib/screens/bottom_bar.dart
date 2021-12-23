@@ -3,7 +3,7 @@ import 'package:full_shop_app/const/my_app_icons.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
 import 'package:full_shop_app/screens/home/home_sceen.dart';
-import 'package:full_shop_app/screens/search_screen.dart';
+import 'package:full_shop_app/screens/search/search.dart';
 import 'package:full_shop_app/screens/user_screen.dart';
 
 class BottomBarScreen extends StatefulWidget {
