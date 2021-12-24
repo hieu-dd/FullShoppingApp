@@ -4,6 +4,7 @@ import 'package:full_shop_app/const/data.dart';
 import 'package:full_shop_app/const/my_app_icons.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
+import 'package:full_shop_app/screens/upload/upload_product_form.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_screen.dart';
 
 class BackLayerMenu extends StatelessWidget {
@@ -152,7 +153,7 @@ class BackLayerMenu extends StatelessWidget {
         _contentItem(
           context,
           () {
-            navigateTo(context, FeedsScreen.routeName);
+            navigateTo(context, UploadProductForm.routeName);
           },
           'Upload a new product',
           MyAppIcons.upload,

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/screens/auth/login.dart';
+import 'package:full_shop_app/screens/auth/sign_up.dart';
 import 'package:full_shop_app/screens/bottom_bar.dart';
 import 'package:full_shop_app/screens/brands/brand_navigation_rail_screen.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds/category_feeds_screen.dart';
 import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
 import 'package:full_shop_app/screens/product_detail/product_details.dart';
+import 'package:full_shop_app/screens/upload/upload_product_form.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_screen.dart';
 
 class AppRoutes {
@@ -31,6 +34,21 @@ class AppRoutes {
       case BrandsScreen.routeName:
         return MaterialPageRoute(
           builder: (_) => BrandsScreen(),
+          settings: settings,
+        );
+      case UploadProductForm.routeName:
+        return MaterialPageRoute(
+          builder: (_) => UploadProductForm(),
+          settings: settings,
+        );
+      case LoginScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => LoginScreen(),
+          settings: settings,
+        );
+      case SignUpScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => SignUpScreen(),
           settings: settings,
         );
       default:
