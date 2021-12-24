@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1007823869754",
+    "firebase_url": "https://shop-app-7b3c7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "shop-app-7b3c7",
+    "storage_bucket": "shop-app-7b3c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1007823869754:android:fd63641e0e0200f3f1e203",
+        "android_client_info": {
+          "package_name": "com.love.cafein.full_shop_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1007823869754-h19r84fc73lmaeki32nq78jmhglso1qt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.love.cafein.full_shop_app",
+            "certificate_hash": "cf2df885fb01fd623eda25c2efa51ae8de83d8ba"
+          }
+        },
+        {
+          "client_id": "1007823869754-vc8jbishri0ov6k223t01ekafuo4ruum.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx5cpSai6dn9TV7l2Jmvs8-HGMJ6rzkIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1007823869754-vc8jbishri0ov6k223t01ekafuo4ruum.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
