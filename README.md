@@ -1,6 +1,6 @@
 # full_shop_app
 
-A new Flutter project.
+A beautiful shopping application by Flutter and Firebase
 
 ## Getting Started
 
