@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
+import 'package:full_shop_app/global/global_method.dart';
 import 'package:full_shop_app/screens/auth/login.dart';
 import 'package:full_shop_app/screens/auth/sign_up.dart';
 import 'package:full_shop_app/screens/bottom_bar.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LandingPageScreen extends StatefulWidget {
   const LandingPageScreen({Key? key}) : super(key: key);
@@ -21,6 +24,29 @@ class _LandingPageScreenState extends State<LandingPageScreen>
     'https://e-shopy.org/wp-content/uploads/2020/08/shop.jpeg',
     'https://e-shopy.org/wp-content/uploads/2020/08/shop.jpeg',
   ];
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  void _loginWithGoogle() async {
+    try {
+      final googleSignInResult = await _googleSignIn.signIn();
+      final googleAuth = await googleSignInResult?.authentication;
+      if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
+        _auth.signInWithCredential(GoogleAuthProvider.credential(
+          idToken: googleAuth?.idToken,
+          accessToken: googleAuth?.accessToken,
+        ));
+      }
+    } catch (error) {
+      GlobalMethod.showAlertDialog("Error", error.toString(), null, context);
+    }
+  }
 
   @override
   void initState() {
@@ -200,7 +226,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               OutlineButton(
-                onPressed: () {},
+                onPressed: _loginWithGoogle,
                 shape: StadiumBorder(),
                 highlightedBorderColor: Colors.red.shade200,
                 borderSide: BorderSide(width: 2, color: Colors.red),

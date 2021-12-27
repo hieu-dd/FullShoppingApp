@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/extension/string.dart';
+import 'package:full_shop_app/global/global_method.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login-screen';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -15,18 +18,40 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   String _emailAddress = '';
   String _password = '';
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   void dispose() {
     _passwordFocusNode.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
-    if (isValid??false) {
+    if (isValid ?? false) {
       _formKey.currentState!.save();
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await _auth.signInWithEmailAndPassword(
+          email: _emailAddress,
+          password: _password,
+        );
+        Navigator.of(context).canPop() ? Navigator.of(context).pop() : null;
+      } on FirebaseAuthException catch (error) {
+        GlobalMethod.showAlertDialog(
+            "Error", error.message ?? "Có lỗi xảy ra", null, context);
+      } catch (error) {
+        GlobalMethod.showAlertDialog("Error", "Có lỗi xảy ra", null, context);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -89,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextFormField(
                           key: ValueKey('email'),
                           validator: (value) {
-                            if (value.isNullOrEmpty() || !value!.contains('@')) {
+                            if (value.isNullOrEmpty() ||
+                                !value!.contains('@')) {
                               return 'Please enter a valid email address';
                             }
                             return null;
@@ -105,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: 'Email Address',
                               fillColor: Theme.of(context).backgroundColor),
                           onSaved: (value) {
-                            _emailAddress = value??'';
+                            _emailAddress = value ?? '';
                           },
                         ),
                       ),
@@ -138,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               labelText: 'Password',
                               fillColor: Theme.of(context).backgroundColor),
                           onSaved: (value) {
-                            _password = value??'';
+                            _password = value ?? '';
                           },
                           obscureText: _obscureText,
                           onEditingComplete: _submitForm,
@@ -148,35 +174,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(width: 10),
-                          ElevatedButton(
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  side: BorderSide(
-                                      color: ColorsConsts.backgroundColor),
-                                ),
-                              )),
-                              onPressed: _submitForm,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Login',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 17),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Icon(
-                                    Icons.person_outlined,
-                                    size: 18,
-                                  )
-                                ],
-                              )),
+                          _isLoading
+                              ? CircularProgressIndicator()
+                              : ElevatedButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      side: BorderSide(
+                                          color: ColorsConsts.backgroundColor),
+                                    ),
+                                  )),
+                                  onPressed: _submitForm,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Login',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 17),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Icon(
+                                        Icons.person_outlined,
+                                        size: 18,
+                                      )
+                                    ],
+                                  )),
                           SizedBox(width: 20),
                         ],
                       ),

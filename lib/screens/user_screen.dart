@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/data.dart';
 import 'package:full_shop_app/const/my_app_icons.dart';
@@ -15,6 +16,7 @@ class UserScreen extends StatefulWidget {
 
 class _UserScreenState extends State<UserScreen> {
   late ScrollController _scrollController;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -100,7 +102,8 @@ class _UserScreenState extends State<UserScreen> {
                       ),
                       ListTile(
                         onTap: () {
-                          Navigator.of(context).pushNamed(WishlistScreen.routeName);
+                          Navigator.of(context)
+                              .pushNamed(WishlistScreen.routeName);
                         },
                         leading: Icon(MyAppIcons.wishlist),
                         title: Text("Wish list"),
@@ -120,24 +123,24 @@ class _UserScreenState extends State<UserScreen> {
                         color: Colors.grey,
                       ),
                       userListTile(
-                        "Email",
-                        "hieu.dd@teko.vn",
-                        Icons.email,
+                        title: "Email",
+                        subtitle: "hieu.dd@teko.vn",
+                        iconData: Icons.email,
                       ),
                       userListTile(
-                        "Phone",
-                        "0943310394",
-                        Icons.phone,
+                        title: "Phone",
+                        subtitle: "0943310394",
+                        iconData: Icons.phone,
                       ),
                       userListTile(
-                        "Shipping address",
-                        "16/91 Gang Thep Street",
-                        Icons.local_shipping,
+                        title: "Shipping address",
+                        subtitle: "16/91 Gang Thep Street",
+                        iconData: Icons.local_shipping,
                       ),
                       userListTile(
-                        "Joined date",
-                        "31/03/1994",
-                        Icons.date_range,
+                        title: "Joined date",
+                        subtitle: "31/03/1994",
+                        iconData: Icons.date_range,
                       ),
                       userTitle("User settings"),
                       const Divider(
@@ -156,6 +159,13 @@ class _UserScreenState extends State<UserScreen> {
                         switchType: SwitchType.material,
                         switchActiveColor: Colors.indigo,
                         title: const Text('Use dark theme'),
+                      ),
+                      userListTile(
+                        title: "Logout",
+                        iconData: Icons.logout_outlined,
+                        fct: (){
+                          _auth.signOut();
+                        },
                       ),
                     ],
                   ),
@@ -216,17 +226,23 @@ Widget userTitle(String title) {
   );
 }
 
-Widget userListTile(
-  String title,
-  String subtitle,
-  IconData iconData,
-) {
+Widget userListTile({
+  required String title,
+  String? subtitle,
+  required IconData iconData,
+  Function? fct,
+}) {
   return Material(
     color: Colors.transparent,
-    child: ListTile(
-      leading: Icon(iconData),
-      title: Text(title),
-      subtitle: Text(subtitle),
+    child: InkWell(
+      onTap: () {
+        fct?.call();
+      },
+      child: ListTile(
+        leading: Icon(iconData),
+        title: Text(title),
+        subtitle: subtitle != null ? Text(subtitle) : null,
+      ),
     ),
   );
 }

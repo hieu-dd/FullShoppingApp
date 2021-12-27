@@ -7,7 +7,7 @@ import 'package:full_shop_app/screens/search/search.dart';
 import 'package:full_shop_app/screens/user_screen.dart';
 
 class BottomBarScreen extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = '/main-screen';
 
   @override
   _BottomBarScreenState createState() => _BottomBarScreenState();

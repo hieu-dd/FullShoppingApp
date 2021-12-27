@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class GlobalMethod {
   static void showAlertDialog(
-      String title, String subtitle, Function fct, BuildContext context) {
+      String title, String subtitle, Function? fct, BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -17,13 +17,14 @@ class GlobalMethod {
                 },
                 child: Text("Cancel".toUpperCase()),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                  fct();
-                },
-                child: Text("OK"),
-              ),
+              if (fct != null)
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    fct();
+                  },
+                  child: Text("OK"),
+                ),
             ],
           );
         });
