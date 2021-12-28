@@ -15,7 +15,11 @@ class CartProvider with ChangeNotifier {
   }
 
   void addProductToCart(
-      String productId, String title, double price, String imageUrl) {
+    String productId,
+    String title,
+    double price,
+    String imageUrl,
+  ) {
     if (_cartItems.containsKey(productId)) {
       _cartItems.update(
         productId,
@@ -52,8 +56,13 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteProduct(String productId){
+  void deleteProduct(String productId) {
     _cartItems.remove(productId);
+    notifyListeners();
+  }
+
+  void clearCart() {
+    _cartItems.clear();
     notifyListeners();
   }
 }

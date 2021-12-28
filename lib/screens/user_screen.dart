@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/data.dart';
@@ -8,6 +9,7 @@ import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:provider/provider.dart';
 
 import 'cart/cart_screen.dart';
+import 'orders/order_screen.dart';
 
 class UserScreen extends StatefulWidget {
   @override
@@ -17,6 +19,25 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   late ScrollController _scrollController;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String _email = '';
+  String _phone = '';
+  String? _imageUrl;
+  Timestamp? _joinAt;
+  var _name = '';
+
+  void getData() async {
+    final user = _auth.currentUser!;
+    final doc = await _firestore.collection("users").doc(user.uid).get();
+    if (doc != null) {
+      setState(() {
+        _email = doc.get('email');
+        _phone = doc.get('phone');
+        _imageUrl = doc.get('imageUrl');
+        _name = doc.get('name');
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -24,7 +45,9 @@ class _UserScreenState extends State<UserScreen> {
     _scrollController.addListener(() {
       setState(() {});
     });
+
     super.initState();
+    getData();
   }
 
   @override
@@ -62,9 +85,9 @@ class _UserScreenState extends State<UserScreen> {
                           Container(
                             height: kToolbarHeight / 2,
                             width: kToolbarHeight / 2,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               boxShadow: [
-                                BoxShadow(
+                                const BoxShadow(
                                   color: Colors.white,
                                   blurRadius: 1.0,
                                 ),
@@ -72,19 +95,18 @@ class _UserScreenState extends State<UserScreen> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.fill,
-                                image: NetworkImage(user_avatar),
+                                image: NetworkImage(_imageUrl ?? user_avatar),
                               ),
                             ),
                           ),
                           const SizedBox(
                             width: 12,
                           ),
-                          const Text("14H"),
+                          Text(_name),
                         ],
                       ),
-                      background: const Image(
-                        image: NetworkImage(
-                            "https://scontent.fhph1-2.fna.fbcdn.net/v/t1.6435-9/119524184_3030131393880758_3961479534331280604_n.jpg?_nc_cat=101&ccb=1-5&_nc_sid=e3f864&_nc_ohc=VfeNBfab5l4AX-46Ccz&_nc_ht=scontent.fhph1-2.fna&oh=00_AT8EJt2yNN14y0CHKCFtTXY2FUL3jMwj349i3f-W4z29gA&oe=61E282E1"),
+                      background: Image(
+                        image: NetworkImage(_imageUrl ?? user_avatar),
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -115,6 +137,14 @@ class _UserScreenState extends State<UserScreen> {
                         },
                         leading: Icon(MyAppIcons.cart),
                         title: Text("Cart"),
+                        trailing: Icon(Icons.chevron_right_outlined),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(OrderScreen.routeName);
+                        },
+                        leading: Icon(MyAppIcons.cart),
+                        title: Text("Order"),
                         trailing: Icon(Icons.chevron_right_outlined),
                       ),
                       userTitle("User Information"),
@@ -163,7 +193,7 @@ class _UserScreenState extends State<UserScreen> {
                       userListTile(
                         title: "Logout",
                         iconData: Icons.logout_outlined,
-                        fct: (){
+                        fct: () {
                           _auth.signOut();
                         },
                       ),

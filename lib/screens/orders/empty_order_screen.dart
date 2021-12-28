@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
 
-class EmptyCartScreen extends StatelessWidget {
+class EmptyOrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          margin:const EdgeInsets.only(top: 80),
+          margin: const EdgeInsets.only(top: 80),
           width: double.infinity,
           height: MediaQuery.of(context).size.height * 0.4,
           child: const Image(
@@ -19,7 +19,7 @@ class EmptyCartScreen extends StatelessWidget {
           'Your Cart Is Empty',
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Theme.of(context).textSelectionColor,
+              color: Theme.of(context).colorScheme.secondary,
               fontSize: 36,
               fontWeight: FontWeight.w600),
         ),
@@ -27,7 +27,7 @@ class EmptyCartScreen extends StatelessWidget {
           height: 30,
         ),
         Text(
-          'Looks Like You didn\'t \n add anything to your cart yet',
+          'Looks Like You didn\'t \n order anything yet',
           textAlign: TextAlign.center,
           style: TextStyle(
               color: ColorsConsts.subTitle,

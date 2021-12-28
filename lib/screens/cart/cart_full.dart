@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:full_shop_app/global/global_method.dart';
 import 'package:full_shop_app/model/cart_entity.dart';
 import 'package:full_shop_app/provider/cart_provider.dart';
+import 'package:full_shop_app/provider/orders_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_item.dart';
@@ -9,6 +11,16 @@ class CartFull extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
+    final ordersProvider = Provider.of<OrdersProvider>(context, listen: false);
+
+    void _checkout() async {
+      try {
+        await ordersProvider.checkout(cartProvider);
+        cartProvider.clearCart();
+      } catch (error) {
+        GlobalMethod.showAlertError(error.toString(), context);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -50,11 +62,13 @@ class CartFull extends StatelessWidget {
           itemCount: cartProvider.cartItems.length,
         ),
       ),
-      bottomSheet: _buildBottomSheet(context, cartProvider.totalAmount),
+      bottomSheet:
+          _buildBottomSheet(context, cartProvider.totalAmount, _checkout),
     );
   }
 
-  Widget _buildBottomSheet(BuildContext context, double grandTotal) {
+  Widget _buildBottomSheet(
+      BuildContext context, double grandTotal, Function order) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -63,7 +77,9 @@ class CartFull extends StatelessWidget {
             flex: 3,
             child: Container(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  order.call();
+                },
                 child: Text("Order now"),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(

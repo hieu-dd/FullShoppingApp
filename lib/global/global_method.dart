@@ -29,4 +29,23 @@ class GlobalMethod {
           );
         });
   }
+
+  static void showAlertError(String subtitle,BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            content: Text(subtitle),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+                child: Text("Cancel".toUpperCase()),
+              ),
+            ],
+          );
+        });
+  }
+
 }

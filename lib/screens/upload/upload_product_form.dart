@@ -1,13 +1,18 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/extension/string.dart';
+import 'package:full_shop_app/global/global_method.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class UploadProductForm extends StatefulWidget {
-  static const routeName = '/upload-product';
+  static const routeName = '/UploadProductForm';
 
   @override
   _UploadProductFormState createState() => _UploadProductFormState();
@@ -26,9 +31,11 @@ class _UploadProductFormState extends State<UploadProductForm> {
   final TextEditingController _brandController = TextEditingController();
   String? _categoryValue;
   String? _brandValue;
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   File? _pickedImage;
-
+  bool _isLoading = false;
+  String? url;
+  var uuid = Uuid();
   showAlertDialog(BuildContext context, String title, String body) {
     // show the dialog
     showDialog(
@@ -50,8 +57,8 @@ class _UploadProductFormState extends State<UploadProductForm> {
     );
   }
 
-  void _trySubmit() {
-    final isValid = _formKey.currentState?.validate() ?? false;
+  void _trySubmit() async {
+    final isValid = _formKey.currentState?.validate()??false;
     FocusScope.of(context).unfocus();
 
     if (isValid) {
@@ -62,7 +69,51 @@ class _UploadProductFormState extends State<UploadProductForm> {
       print(_productBrand);
       print(_productDescription);
       print(_productQuantity);
-      // Use those values to send our auth request ...
+      // Use those values to send our request ...
+    }
+    if (isValid) {
+      _formKey.currentState!.save();
+      try {
+        if (_pickedImage == null) {
+          GlobalMethod.showAlertDialog('Warning','Please pick an image',null, context);
+        } else {
+          setState(() {
+            _isLoading = true;
+          });
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child('productsImages')
+              .child(_productTitle + '.jpg');
+          await ref.putFile(_pickedImage!);
+          url = await ref.getDownloadURL();
+
+          final User user = _auth.currentUser!;
+          final _uid = user.uid;
+          final productId = uuid.v4();
+          await FirebaseFirestore.instance
+              .collection('products')
+              .doc(productId)
+              .set({
+            'productId': productId,
+            'productTitle': _productTitle,
+            'price': _productPrice,
+            'productImage': url,
+            'productCategory': _productCategory,
+            'productBrand': _productBrand,
+            'productDescription': _productDescription,
+            'productQuantity': _productQuantity,
+            'userId': _uid,
+            'createdAt': Timestamp.now(),
+          });
+          Navigator.canPop(context) ? Navigator.pop(context) : null;
+        }
+      } catch (error) {
+        GlobalMethod.showAlertError(error.toString(), context);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -72,7 +123,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
       source: ImageSource.camera,
       imageQuality: 40,
     );
-    final pickedImageFile = pickedImage != null ? File(pickedImage.path) : null;
+    final pickedImageFile = File(pickedImage!.path);
     setState(() {
       _pickedImage = pickedImageFile;
     });
@@ -81,7 +132,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
 
   void _pickImageGallery() async {
     final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(
+    final pickedImage = await picker.getImage(
       source: ImageSource.gallery,
       imageQuality: 50,
     );
@@ -125,7 +176,13 @@ class _UploadProductFormState extends State<UploadProductForm> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 2),
-                  child: Text('Upload',
+                  child: _isLoading
+                      ? Center(
+                      child: Container(
+                          height: 40,
+                          width: 40,
+                          child: CircularProgressIndicator()))
+                      : Text('Upload',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center),
                 ),
@@ -138,7 +195,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                       Colors.yellow,
                       Colors.deepOrange,
                       Colors.orange,
-                      Colors.yellow.shade800,
+                      Colors.yellow.shade800
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -183,7 +240,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                     labelText: 'Product Title',
                                   ),
                                   onSaved: (value) {
-                                    _productTitle = value ?? '';
+                                    _productTitle = value!;
                                   },
                                 ),
                               ),
@@ -205,15 +262,10 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                 ],
                                 decoration: InputDecoration(
                                   labelText: 'Price \$',
-                                  //  prefixIcon: Icon(Icons.mail),
-                                  // suffixIcon: Text(
-                                  //   '\n \n \$',
-                                  //   textAlign: TextAlign.start,
-                                  // ),
                                 ),
                                 //obscureText: true,
                                 onSaved: (value) {
-                                  _productPrice = value ?? '';
+                                  _productPrice = value!;
                                 },
                               ),
                             ),
@@ -228,37 +280,37 @@ class _UploadProductFormState extends State<UploadProductForm> {
                               //  flex: 2,
                               child: this._pickedImage == null
                                   ? Container(
-                                      margin: EdgeInsets.all(10),
-                                      height: 200,
-                                      width: 200,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(width: 1),
-                                        borderRadius: BorderRadius.circular(4),
-                                        color:
-                                            Theme.of(context).backgroundColor,
-                                      ),
-                                    )
+                                margin: EdgeInsets.all(10),
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  border: Border.all(width: 1),
+                                  borderRadius: BorderRadius.circular(4),
+                                  color:
+                                  Theme.of(context).backgroundColor,
+                                ),
+                              )
                                   : Container(
-                                      margin: EdgeInsets.all(10),
-                                      height: 200,
-                                      width: 200,
-                                      child: Container(
-                                        height: 200,
-                                        // width: 200,
-                                        decoration: BoxDecoration(
-                                          // borderRadius: BorderRadius.only(
-                                          //   topLeft: const Radius.circular(40.0),
-                                          // ),
-                                          color:
-                                              Theme.of(context).backgroundColor,
-                                        ),
-                                        child: Image.file(
-                                          this._pickedImage!,
-                                          fit: BoxFit.contain,
-                                          alignment: Alignment.center,
-                                        ),
-                                      ),
-                                    ),
+                                margin: EdgeInsets.all(10),
+                                height: 200,
+                                width: 200,
+                                child: Container(
+                                  height: 200,
+                                  // width: 200,
+                                  decoration: BoxDecoration(
+                                    // borderRadius: BorderRadius.only(
+                                    //   topLeft: const Radius.circular(40.0),
+                                    // ),
+                                    color:
+                                    Theme.of(context).backgroundColor,
+                                  ),
+                                  child: Image.file(
+                                    this._pickedImage!,
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,7 +395,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                       labelText: 'Add a new Category',
                                     ),
                                     onSaved: (value) {
-                                      _productCategory = value ?? '';
+                                      _productCategory = value!;
                                     },
                                   ),
                                 ),
@@ -379,7 +431,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                               onChanged: (value) {
                                 setState(() {
                                   _categoryValue = value;
-                                  _categoryController.text = value ?? '';
+                                  _categoryController.text = value??'';
                                   //_controller.text= _productCategory;
                                   print(_productCategory);
                                 });
@@ -413,7 +465,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                       labelText: 'Brand',
                                     ),
                                     onSaved: (value) {
-                                      _productBrand = value ?? '';
+                                      _productBrand = value!;
                                     },
                                   ),
                                 ),
@@ -454,10 +506,10 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                   value: 'Huawei',
                                 ),
                               ],
-                              onChanged: (value) {
+                              onChanged: ( value) {
                                 setState(() {
                                   _brandValue = value;
-                                  _brandController.text = value ?? '';
+                                  _brandController.text = value??'';
                                   print(_productBrand);
                                 });
                               },
@@ -485,7 +537,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                               border: OutlineInputBorder(),
                             ),
                             onSaved: (value) {
-                              _productDescription = value ?? '';
+                              _productDescription = value??'';
                             },
                             onChanged: (text) {
                               // setState(() => charLength -= text.length);
@@ -512,7 +564,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                                     labelText: 'Quantity',
                                   ),
                                   onSaved: (value) {
-                                    _productQuantity = value ?? '';
+                                    _productQuantity = value!;
                                   },
                                 ),
                               ),
@@ -537,10 +589,10 @@ class _UploadProductFormState extends State<UploadProductForm> {
 
 class GradientIcon extends StatelessWidget {
   GradientIcon(
-    this.icon,
-    this.size,
-    this.gradient,
-  );
+      this.icon,
+      this.size,
+      this.gradient,
+      );
 
   final IconData icon;
   final double size;

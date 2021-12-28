@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/provider/cart_provider.dart';
 import 'package:full_shop_app/provider/dark_theme_provider.dart';
+import 'package:full_shop_app/provider/orders_provider.dart';
 import 'package:full_shop_app/provider/products_provider.dart';
 import 'package:full_shop_app/provider/wishlist_provider.dart';
 import 'package:full_shop_app/routes/app_routes.dart';
@@ -27,6 +28,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ProductsProvider()),
           ChangeNotifierProvider(create: (context) => CartProvider()),
           ChangeNotifierProvider(create: (context) => WishListProvider()),
+          ChangeNotifierProvider(create: (context) => OrdersProvider()),
+
         ],
         child: Consumer<DarkThemeProvider>(
           builder: (context, theme, child) {

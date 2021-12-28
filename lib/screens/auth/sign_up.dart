@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:full_shop_app/const/colors.dart';
 import 'package:full_shop_app/extension/string.dart';
@@ -21,6 +23,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _phoneNumberFocusNode = FocusNode();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _obscureText = true;
   String _emailAddress = '';
   String _password = '';
@@ -39,20 +43,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _submitForm() async {
+    if (_pickedImage == null) {
+      GlobalMethod.showAlertDialog(
+          "Warning", "Please select an image", null, context);
+      return;
+    }
     final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
     if (isValid ?? false) {
       _formKey.currentState!.save();
-      setState(() {
-        _isLoading = true;
-      });
+
       try {
+        setState(() {
+          _isLoading = true;
+        });
+        final ref = _firebaseStorage
+            .ref()
+            .child("userimages")
+            .child(_fullName + ".jpg");
+        await ref.putFile(_pickedImage!);
+        final url = await ref.getDownloadURL();
+
         await _auth.createUserWithEmailAndPassword(
           email: _emailAddress,
           password: _password,
         );
+        final user = _auth.currentUser!;
+        await _firestore.collection("users").doc(user.uid).set({
+          'name': _fullName,
+          'id': user.uid,
+          'imageUrl': url,
+          'createAt': Timestamp.now(),
+          'email': _emailAddress,
+          'phone': _phoneNumber.toString(),
+        });
         Navigator.of(context).canPop() ? Navigator.of(context).pop() : null;
-
       } catch (error) {
         GlobalMethod.showAlertDialog("Error", error.toString(), null, context);
       } finally {

@@ -6,6 +6,7 @@ import 'package:full_shop_app/screens/brands/brand_navigation_rail_screen.dart';
 import 'package:full_shop_app/screens/cart/cart_screen.dart';
 import 'package:full_shop_app/screens/feeds/category_feeds_screen.dart';
 import 'package:full_shop_app/screens/feeds/feeds_screen.dart';
+import 'package:full_shop_app/screens/orders/order_screen.dart';
 import 'package:full_shop_app/screens/product_detail/product_details.dart';
 import 'package:full_shop_app/screens/upload/upload_product_form.dart';
 import 'package:full_shop_app/screens/wishlist/wishlist_screen.dart';
@@ -19,6 +20,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => FeedsScreen());
       case CartScreen.routeName:
         return MaterialPageRoute(builder: (_) => CartScreen());
+      case OrderScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => OrderScreen(),
+          settings: settings,
+        );
       case WishlistScreen.routeName:
         return MaterialPageRoute(builder: (_) => WishlistScreen());
       case CategoryFeedsScreen.routeName:
